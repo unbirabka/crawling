@@ -86,7 +86,7 @@ jobs:
         run: |
           aws --version
           helm version
-          helm repo add sekolahlinux https://unbirabka.github.io/helm-sekolahlinux/charts
+          helm repo add sekolahlinux 'https://raw.githubusercontent.com/unbirabka/helm-sekolahlinux/main/charts/'
           helm repo update
           helm template service-a sekolahlinux/sekolahlinux --version=0.1.0 -f service-a/values.yaml > service-a-${{env.SHORT_SHA}}.yaml
 #          aws eks --region ${{env.AWS_DEFAULT_REGION}} update-kubeconfig --name ${{env.KUBECLUSTER}}
