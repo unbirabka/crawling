@@ -1,5 +1,6 @@
 name: service-a
 on:
+  workflow_dispatch:
   push:
     branches:
     - main
