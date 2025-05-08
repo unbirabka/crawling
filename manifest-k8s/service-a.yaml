@@ -6,9 +6,9 @@ metadata:
   name: service-a
   labels:
     name: service-a
-    env: 
-    version: 
-    maintainer: 
+    env: dev
+    version: 0.1.0
+    maintainer: sekolahlinux
     managed-by: Helm
     helm-chart: sekolahlinux-0.1.0
 spec:
@@ -20,7 +20,7 @@ spec:
       name: http
   selector:
     name: service-a-server
-    env:
+    env: dev
 ---
 # Source: sekolahlinux/templates/deployment-server.yaml
 apiVersion: apps/v1
@@ -29,9 +29,9 @@ metadata:
   name: service-a-server
   labels:
     name: service-a
-    env: 
-    version: 
-    maintainer: 
+    env: dev
+    version: 0.1.0
+    maintainer: sekolahlinux
     managed-by: Helm
     helm-chart: sekolahlinux-0.1.0
   annotations:
@@ -40,7 +40,7 @@ spec:
   selector:
     matchLabels:
       name: service-a-server
-      env: 
+      env: dev
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -50,9 +50,9 @@ spec:
     metadata:
       labels:
         name: service-a-server
-        env: 
-        version: 
-        maintainer: 
+        env: dev
+        version: 0.1.0
+        maintainer: sekolahlinux
         managed-by: Helm
         helm-chart: sekolahlinux-0.1.0
       annotations:
@@ -63,7 +63,7 @@ spec:
     spec:
       containers:
         - name: service-a-server
-          image: "sekolahlinux/crawler:service-a-9406724c"
+          image: "sekolahlinux/crawler:service-a-fecc5693"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
@@ -101,9 +101,9 @@ metadata:
   name: service-a
   labels:
     name: service-a
-    env: 
-    version: 
-    maintainer: 
+    env: dev
+    version: 0.1.0
+    maintainer: sekolahlinux
     managed-by: Helm
     helm-chart: sekolahlinux-0.1.0
   annotations:
