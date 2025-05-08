@@ -1,0 +1,383 @@
+image:
+  pullPolicy: IfNotPresent
+
+  # set secret untuk melakukan pull docker image dari private repository
+  # pullSecrets: docker-secret
+  pullSecrets: []
+
+  # set repository url jika menggunakan private repo non docker hub / atau bisa set image name saja jika menggunakan image yg berada di repo docker registry 
+  # repository: 491248485740.dkr.ecr.ap-southeast-1.amazonaws.com/mw-xms
+  # repository: ubuntu
+  repository: "sekolahlinux/crawler"
+
+  # set tag docker image
+  # tag: 20.04
+  tag: service-a-$SHORT_SHA
+
+# config dibawah untuk menambahkan label pada resource deployment,pods,service dan service2 lain yang ada di template
+meta:
+  env: ""
+  maintainer: ""
+  version: ""
+
+# config dibawah digunakan untuk resource template deployment.yaml
+server:
+  enabled: true
+  annotations: {}
+
+  # how to add affinity on deployment manifest
+  # affinity:
+  #   nodeAffinity:
+  #     requiredDuringSchedulingIgnoredDuringExecution:
+  #       nodeSelectorTerms:
+  #       - matchExpressions:
+  #         - key: topology.kubernetes.io/zone
+  #           operator: In
+  #           values:
+  #           - antarctica-east1
+  #           - antarctica-west1
+  #     preferredDuringSchedulingIgnoredDuringExecution:
+  #     - weight: 1
+  #       preference:
+  #         matchExpressions:
+  #         - key: another-node-label-key
+  #           operator: In
+  #           values:
+  #           - another-node-label-value
+  affinity: {}
+
+  # paramater dibawah digunakan jika kamu punya custom command untuk di jalankan di container mu
+  # command: 
+  #   - tail
+  command: []
+
+  # paramater dibawah digunakan jika kamu punya custom command untuk di jalankan di container mu
+  # args: 
+  #   - -f
+  #   - /var/log/dpkg.log
+  args: []
+
+  # paramater autoReload dibawah jika kamu set true makan akan menambahkan annotation pada deployment resource yang berguna untuk restart pods ketika terjadi perubahan pada configmap
+  # dibawah ini adalah annotation yang akan ditambahkan
+  # reloader.stakater.com/auto: "true"
+  # referensi nya bisa kamu lihat pada url berikut https://github.com/stakater/Reloader
+  autoReload: true
+
+  dnsPolicy: ClusterFirst
+
+  # paramater dibawah untuk menambahkan env var
+  # env:
+  #   - name: kota
+  #     value: "jakarta"
+  #   - name: negara
+  #     value: "indonesia"    
+  env: {}
+
+  containers: []
+  
+  # volume dan volumeMount dibawah digunakan jika kamu sudah punya configmap existing yang ingin di integrasikan dengan deployment resource
+  #volumeMounts:
+  #  - mountPath: /cache
+  #    name: cache-volume
+  #  - mountPath: /etc/config
+  #    name: config-volume
+  #  - mountPath: /usr/share/nginx/html/hello.html
+  #    subPath: hello.html
+  #    name: test-volume
+  volumeMounts: []
+  
+  #volumes:
+  #  - emptyDir: {}
+  #    name: cache-volume
+  #  - configMap:
+  #      name: special-config
+  #    name: config-volume
+  #  - configMap:
+  #      name: test-configmap
+  #    name: test-volume
+  volumes: []
+
+  # paramater dibawah untuk menambahkan set true atau false pada annotation istio, yang berguna untuk inject sidecar
+  istio:
+    injected: false
+
+  # unknown param, sudah di cari namun tidak ada di semua manifest di template
+  fullNameOverride: ""    
+
+  # paramater dibawah untuk overide suffix "server", karena by default jika tidak diisi maka prefixnya adalah server
+  # nameOverride: "mw"
+  # jika nama service nya adalah "backend" maka nama deployment nya akan menjadi "backend-mw"
+  # namun jika tidak di set maka suffix nya adalah server maka nama service nya adalah "backend-server"
+  nameOverride: ""
+
+  # paramater dibawah untuk menentukan ke node mana pods akan berjalan
+  # nodeSelector:
+  #   team: data
+  #   env: production
+  nodeSelector: {}
+
+  # paramater dibawah untuk set port yang saat ini sedang berjalan di container
+  port: 8080
+
+  # paramater dibawah untuk menambahkan port juga annotation promotheus pada deployment
+  prometheus:
+    path: /metrics
+    port: 2112
+    scrape: true
+
+  # paramater dibawah untuk konfigurasi liveness dan readiness sebuah pods
+  #liveness:
+  #  enabled: true
+  #  config:
+  #    tcpSocket:
+  #      port: http
+  #    initialDelaySeconds: 5
+  #    periodSeconds: 10
+  #readiness:
+  #  enabled: false
+  #  config:
+  #    httpGet:
+  #      path: /graphql
+  #      port: http
+  #    initialDelaySeconds: 15
+  #    periodSeconds: 20
+  liveness: {}
+  readiness: {}
+
+  # paramater dibawah untuk set berapa jumlah replica pods, jangan set paramater dibawah jika ingin menggunakan HPA
+  # replicas: 2
+  replicas: []
+
+  # paramater dibawah untuk set resource request dan limit pada pods
+  # resources:
+  #   requests:
+  #     memory: "64Mi"
+  #     cpu: "250m"
+  #   limits:
+  #     memory: "128Mi"
+  #     cpu: "500m"
+  resources: {}
+
+  restartPolicy: Always
+
+  # paramater dibawah untuk set berapa persen jumlah pods yg bisa dimatikan pada saat terjadi rolling update 
+  rollingUpdate:
+    maxSurge: 25%
+    maxUnavailable: 25%
+
+  # paramater dibawah digunakan ketika node k8s menggunakan taint, contohnya seperti dibawah
+  # detail terkait taint bisa kamu baca disini https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+  # tolerations:
+  #   - key: "key1"
+  #     operator: "Equal"
+  #     value: "value1"
+  #     effect: "NoSchedule"
+  tolerations: []
+
+initContainer:
+  enabled: false
+  image: ubuntu:20.04
+  pullPolicy: IfNotPresent
+
+  # paramater dibawah digunakan jika kamu punya custom command untuk di jalankan di container mu
+  # command: 
+  #   - sleep
+  command: {}
+
+  # paramater dibawah digunakan jika kamu punya custom command untuk di jalankan di container mu
+  # args: 
+  #   - 10s
+  args: {}
+
+  # paramater dibawah untuk menambahkan env var
+  # env:
+  #   - name: kota
+  #     value: "jakarta"
+  #   - name: negara
+  #     value: "indonesia"    
+  env: {}
+
+# paramater dibawah untuk konfigurasi resource kind:service
+service:
+  enabled: true
+  
+  # paramater dibawah untuk menambahkan annotation pada service, biasanya diperlukan saat kita ingin set internal loadbalancer ataupun kebutuhan lainnya
+  # annotations:
+  #   networking.gke.io/load-balancer-type: "Internal"
+  #   service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+  #   service.beta.kubernetes.io/aws-load-balancer-scheme: internal
+  #   service.beta.kubernetes.io/aws-load-balancer-type: nlb
+  annotations: {}
+
+  port: 80
+  targetPort: http
+  type: ClusterIP
+  
+  # paramater dibawah untuk menambahkan ports pada kind:services jika dirasa dalam sebuah service membutuhkan port lainnya
+  multiport:
+    enabled: false
+    config: {}
+    #   - name: port1
+    #     port: 8080
+    #     targetPort: 8080
+    #     protocol: TCP
+    #   - name: port2
+    #     port: 8090
+    #     targetPort: 8090
+    #     protocol: TCP
+
+# paramater dibawah untuk mengaktifkan serta set treshold resource hpa
+autoscaling:
+  enabled: false
+  annotations: {}
+  minReplicas: 1
+  maxReplicas: 3
+  cpu:
+    target:
+      type: Utilization
+      averageUtilization: 70
+  memory:
+    target:
+      type: Utilization
+      averageUtilization: 70
+  # cpu:
+  #   targetAverageUtilization: 85
+  # memory:
+  #   targetAverageUtilization: 85
+
+# dengan enable configmap maka volume dan volumemount akan ditambahkan pada manifest deployment-server.yaml pada template
+configMap:
+  enabled: true
+
+  # menambahkan annotation pada configmap.yaml
+  # annotations:
+  #   reloader.stakater.com/auto: "true"
+  annotations: {}
+
+  # add data to configmap
+  # data:
+  #   nama: macthwatch
+  #   password: qwerty123456
+  #   my.cnf: |
+  #     max_connections       = 151
+  #     max_user_connections  = 50 
+  #   index.html: |
+  #     <h1>hello world</h1>
+  data: {}
+
+  # mountpath digunakan untuk set file or folder tujuan
+  # mountPath: /etc/mysql/conf.d/my.cnf
+  # mountPath: /etc/mysql/conf.d
+  mountPath: params
+
+  # subath digunakan untuk memilih secara spesifik file apa yang ada di dalam configmap yang ingin di mount
+  # subPath: my.cnf
+  subPath: ""
+
+  readOnly: true
+
+# paramater dibawah ini untuk mengaktifkan ingress resource
+ingress:
+  enabled: true
+  
+  # paramater dibawah untuk menambahkan annotation pada manifest kind:ingress
+  # annotations:
+  #   nginx.ingress.kubernetes.io/proxy-body-size: "15m"
+  #   nginx.ingress.kubernetes.io/limit-rps: "10"
+  annotations: {}
+
+  class: nginx
+
+  # paramater dibawah untuk enable annotation issuernya apakah di namespace 
+  # cert-manager.io/issuer: the name of an Issuer to acquire the certificate required for this Ingress. 
+  # The Issuer must be in the same namespace as the Ingress resource.
+  #
+  # cert-manager.io/cluster-issuer: the name of a ClusterIssuer to acquire the certificate required for this Ingress. 
+  # It does not matter which namespace your Ingress resides, as ClusterIssuers are non-namespaced resources.
+  issuer:
+    namespaced: false
+    name: letsencrypt
+  
+  # contoh data paramater dibawah
+  # tls:
+  #   - hosts:
+  #       - admin1.sekolahlinux.com
+  tls:
+    - hosts: []
+
+  # contoh data parameter dibawah
+  # hosts:
+  #   - host: admin1.sekolahlinux.com
+  #     paths:
+  #       - "/"
+  hosts:
+    - host: admin1.sekolahlinux.com
+      paths:
+        - "/"
+  pathtype: ImplementationSpecific
+  
+  # config second ingress domain for second domain, by default false
+  secondHost:
+    enabled: false
+    annotations: {}
+    class: nginx
+    issuer:
+      name: letsencrypt
+      namespaced: false
+    # contoh paramater dibawah
+    # tls:
+    #   - hosts:
+    #       - admin2.sekolahlinux.com
+    tls:
+      - hosts: []
+
+    # contoh paramater dibawah
+    # hosts: []
+    #  - host: admin2.sekolahlinux.com
+    #    paths:
+    #      - "/"
+    hosts: []
+
+# Pod Disruption Budget
+pdb:
+  enabled: false
+  minAvailable: 1
+
+cronJobs:
+  enabled: false
+  image: "ubuntu:20.04"
+  pullPolicy: IfNotPresent
+  
+  # set secret untuk melakukan pull docker image dari private repository
+  # pullSecrets: docker-secret
+  pullSecrets: []
+
+  #           ┌──────── minute (0 - 59)
+  #           │ ┌────── hour (0 - 23)
+  #           │ │ ┌──── day of the month (1 - 31)
+  #           │ │ │ ┌── month (1 - 12)
+  #           │ │ │ │ ┌ day of the week (0 - 6) (Sunday to Saturday;
+  #           │ │ │ │ │ 7 is also Sunday on some systems)
+  #           │ │ │ │ │ OR sun, mon, tue, wed, thu, fri, sat
+  #           │ │ │ │ │
+  # schedule: * * * * *
+  schedule: "* * * * *"
+
+  # paramater dibawah digunakan jika kamu punya custom command untuk di jalankan di container mu
+  command:
+    - sleep
+  # command: {}
+
+  # paramater dibawah digunakan jika kamu punya custom command untuk di jalankan di container mu
+  args:
+    - 10s
+  # args: {}
+
+  # paramater dibawah untuk menambahkan env var
+  # env:
+  #   - name: kota
+  #     value: "jakarta"
+  #   - name: negara
+  #     value: "indonesia"
+  env: {}
+

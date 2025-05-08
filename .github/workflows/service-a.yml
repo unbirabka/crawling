@@ -1,0 +1,98 @@
+name: service-a
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - 'service-a/**'
+
+env:
+  ENVIRONMENT: dev
+  IMAGE_REGISTRY: sekolahlinux/crawler
+  APP_NAME: service-a
+  AWS_DEFAULT_REGION: ap-southeast-1
+  KUBENAMESPACE: backend
+  KUBECLUSTER: sekolahlinux
+  PORT: 8080 
+    
+jobs:
+  lint_code:
+    name: lint_code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v3      
+      - name: Lint Test
+        id: lint-test
+        run: |
+          python3 -m pip install pylint
+          python3 -m pip install -r service-a/requirements.txt
+          pylint service-a/main.py
+
+  build_docker_image:
+    name: build docker image
+    runs-on: ubuntu-latest
+    needs: [lint_code]
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v3      
+      - name: Get Short SHA
+        id: short-sha
+        run: |
+          echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: sekolahlinux
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and Push
+        uses: docker/build-push-action@v4
+        with:
+          file: service-a/Dockerfile
+          push: true
+          tags: sekolahlinux/crawler:service-a-${{env.SHORT_SHA}}
+
+  deploy_k8s:
+    name: deploy k8s
+    runs-on: ubuntu-latest
+    needs: [build_docker_image]
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v3
+#      - name: Configure AWS credentials
+#        uses: aws-actions/configure-aws-credentials@v1
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: ap-southeast-1
+#      - name: Install AWS CLI
+#        id: install-aws-cli
+#        uses: unfor19/install-aws-cli-action@v1
+#        with:
+#          version: 2
+      - name: Install Helm CLI
+        uses: azure/setup-helm@v3
+        with:
+           version: 'v3.12.0'
+      - name: Get Short SHA
+        id: short-sha
+        run: |
+          echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV             
+      - name: Helm Values Preparation
+        run: |
+          envsubst < service-a/values.yaml.bak > service-a/values.yaml
+      - name: Helm Apply
+        run: |
+          aws --version
+          helm version
+          helm repo add sekolahlinux https://unbirabka.github.io/helm-sekolahlinux/charts
+          helm repo update
+          helm template service-a sekolahlinux/sekolahlinux --version=0.1.0 -f service-a/values.yaml > service-a-${{env.SHORT_SHA}}.yaml
+#          aws eks --region ${{env.AWS_DEFAULT_REGION}} update-kubeconfig --name ${{env.KUBECLUSTER}}
+#          helm upgrade --version 0.1.0 ${{env.APP_NAME}}-${{env.ENVIRONMENT}} sekolahlinux/sekolahlinux --install --namespace ${{env.KUBENAMESPACE}} --values service-a/values.yaml 
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifact manifest k8s service-a
+          path: service-a-${{env.SHORT_SHA}}.yaml
+          retention-days: 3

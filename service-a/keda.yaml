@@ -1,0 +1,19 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: service-a
+spec:
+  scaleTargetRef:
+    name: service-a
+  pollingInterval: 30
+  cooldownPeriod: 300
+  minReplicaCount: 1
+  maxReplicaCount: 10
+  triggers:
+    - type: prometheus
+      metadata:
+        serverAddress: http://prometheus-server:80
+        query: |
+          sum(rate(nginx_ingress_controller_requests{server_name="service-a-ingress", host="admin.sekolahlinux.com"}[1m]))
+        threshold: "10"
+
