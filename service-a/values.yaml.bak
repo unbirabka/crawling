@@ -247,7 +247,7 @@ autoscaling:
 
 # dengan enable configmap maka volume dan volumemount akan ditambahkan pada manifest deployment-server.yaml pada template
 configMap:
-  enabled: true
+  enabled: false
 
   # menambahkan annotation pada configmap.yaml
   # annotations:
@@ -301,17 +301,17 @@ ingress:
   # contoh data paramater dibawah
   # tls:
   #   - hosts:
-  #       - admin1.sekolahlinux.com
+  #       - admin1.sekolahlinux.internal
   tls:
     - hosts: []
 
   # contoh data parameter dibawah
   # hosts:
-  #   - host: admin1.sekolahlinux.com
+  #   - host: admin1.sekolahlinux.internal
   #     paths:
   #       - "/"
   hosts:
-    - host: admin1.sekolahlinux.com
+    - host: admin1.sekolahlinux.internal
       paths:
         - "/"
   pathtype: ImplementationSpecific
@@ -327,13 +327,13 @@ ingress:
     # contoh paramater dibawah
     # tls:
     #   - hosts:
-    #       - admin2.sekolahlinux.com
+    #       - admin2.sekolahlinux.internal
     tls:
       - hosts: []
 
     # contoh paramater dibawah
     # hosts: []
-    #  - host: admin2.sekolahlinux.com
+    #  - host: admin2.sekolahlinux.internal
     #    paths:
     #      - "/"
     hosts: []

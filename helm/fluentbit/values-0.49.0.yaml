@@ -424,7 +424,7 @@ config:
         Port               9200
         tls                On
         HTTP_User          elastic
-        HTTP_Passwd        fhGlk3bXPD5s07mq
+        HTTP_Passwd        elastic
         Logstash_Format    On
         Logstash_Prefix    sekolahlinux-pods
         tls.verify         Off

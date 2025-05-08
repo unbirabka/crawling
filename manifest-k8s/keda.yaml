@@ -1,0 +1,21 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: service-a
+  namespace: default  # Ganti jika deployment berada di namespace lain
+spec:
+  scaleTargetRef:
+    name: service-a-server
+  pollingInterval: 30
+  cooldownPeriod: 60
+  minReplicaCount: 1
+  maxReplicaCount: 10
+  triggers:
+    - type: prometheus
+      metadata:
+        serverAddress: http://prometheus-server.default.svc:80
+        query: |
+          round(sum(irate(nginx_ingress_controller_requests{ingress="service-a"}[5m])))
+        threshold: "10"
+        activationThreshold: "1"
+

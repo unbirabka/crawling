@@ -1,0 +1,121 @@
+# Source: sekolahlinux/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-a
+  labels:
+    name: service-a
+    env: 
+    version: 
+    maintainer: 
+    managed-by: Helm
+    helm-chart: sekolahlinux-0.1.0
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    name: service-a-server
+    env:
+---
+# Source: sekolahlinux/templates/deployment-server.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-a-server
+  labels:
+    name: service-a
+    env: 
+    version: 
+    maintainer: 
+    managed-by: Helm
+    helm-chart: sekolahlinux-0.1.0
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  selector:
+    matchLabels:
+      name: service-a-server
+      env: 
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        name: service-a-server
+        env: 
+        version: 
+        maintainer: 
+        managed-by: Helm
+        helm-chart: sekolahlinux-0.1.0
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "2112"
+        sidecar.istio.io/inject: "false"
+    spec:
+      containers:
+        - name: service-a-server
+          image: "sekolahlinux/crawler:service-a-7af0f852"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: prometheus
+              containerPort: 2112
+              protocol: TCP
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+      restartPolicy: Always
+      dnsPolicy: ClusterFirst
+---
+# Source: sekolahlinux/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: service-a
+  labels:
+    name: service-a
+    env: 
+    version: 
+    maintainer: 
+    managed-by: Helm
+    helm-chart: sekolahlinux-0.1.0
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: "admin1.sekolahlinux.internal"
+      http:
+        paths:
+          - path: /
+            backend:
+              service:
+                name: service-a
+                port: 
+                  name: http
+            pathType: ImplementationSpecific
+
