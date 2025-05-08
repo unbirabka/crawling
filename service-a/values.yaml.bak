@@ -16,9 +16,9 @@ image:
 
 # config dibawah untuk menambahkan label pada resource deployment,pods,service dan service2 lain yang ada di template
 meta:
-  env: ""
-  maintainer: ""
-  version: ""
+  env: "dev"
+  maintainer: "sekolahlinux"
+  version: "0.1.0"
 
 # config dibawah digunakan untuk resource template deployment.yaml
 server:
