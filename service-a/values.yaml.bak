@@ -273,8 +273,8 @@ keda:
         name: $APP_NAME-server
       pollingInterval: 10
       cooldownPeriod: 10
-      minReplicaCount: 1
-      maxReplicaCount: 10
+      minReplicaCount: 2
+      maxReplicaCount: 5
       triggers:
         - type: prometheus
           metadata:
