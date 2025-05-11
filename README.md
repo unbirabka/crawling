@@ -1,4 +1,4 @@
-# live Demo
+# Live Demo
 
 
 - https://www.youtube.com/watch?v=A-jZa4lGaJk
@@ -129,6 +129,3 @@ beberapa task yang saya kerjakan diatas juga pernah saya kerjakan baik di curren
 
 - https://sekolahlinux.com/
 
-untuk video live demo bisa dilihat di link berikut ini
-
-- https://www.youtube.com/watch?v=A-jZa4lGaJk
