@@ -84,13 +84,13 @@ jobs:
           envsubst < service-a/values.yaml.bak > service-a/values.yaml
       - name: Helm Apply
         run: |
-          aws --version
+#          aws --version
           helm version
           helm repo add sekolahlinux 'https://raw.githubusercontent.com/unbirabka/helm-sekolahlinux/main/charts/'
           helm repo update
           helm template service-a sekolahlinux/sekolahlinux --version=0.1.0 -f service-a/values.yaml > service-a-${{env.SHORT_SHA}}.yaml
 #          aws eks --region ${{env.AWS_DEFAULT_REGION}} update-kubeconfig --name ${{env.KUBECLUSTER}}
-#          helm upgrade --version 0.1.0 ${{env.APP_NAME}}-${{env.ENVIRONMENT}} sekolahlinux/sekolahlinux --install --namespace ${{env.KUBENAMESPACE}} --values service-a/values.yaml 
+#          helm upgrade --version 0.1.0 ${{env.APP_NAME}}-${{env.ENVIRONMENT}} sekolahlinux/sekolahlinux --install --namespace ${{env.KUBENAMESPACE}} -f service-a/values.yaml 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v4
         with:
