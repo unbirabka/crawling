@@ -12,7 +12,7 @@ metadata:
     managed-by: Helm
     helm-chart: sekolahlinux-0.1.0
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   ports:
     - port: 80
       targetPort: http
