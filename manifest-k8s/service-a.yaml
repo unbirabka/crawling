@@ -110,9 +110,6 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt
 spec:
   ingressClassName: nginx
-  tls:
-    - hosts:
-      secretName: service-a
   rules:
     - host: "admin1.sekolahlinux.internal"
       http:
