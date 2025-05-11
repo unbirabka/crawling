@@ -1,3 +1,9 @@
+# Live Demo
+
+
+- https://www.youtube.com/watch?v=A-jZa4lGaJk
+
+
 # Hello MrScraper
 selamat datang, repo ini saya buat untuk memenuhi request "MrScraper"
 untuk proses deployment nya saya menggunakan ci/cd `github-action`, karena disini saya menggunakan minikube, saya hanya menggunakan `github-action` untuk keperluan generate manifest k8s dan build image docker, ada 2 methode, `manual` dan `otomatis` ketika github mendetech terjadi perubahan pada folder `service-a` di branch `main`
@@ -121,4 +127,5 @@ in case jika menggunakan aws eks, saya juga put pada github-action workflows yam
 
 beberapa task yang saya kerjakan diatas juga pernah saya kerjakan baik di current company ataupun di sebelumnya, dan bisa dibaca di
 
-- https://sekolahlinux.com/ 
+- https://sekolahlinux.com/
+
