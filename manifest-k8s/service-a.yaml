@@ -11,6 +11,10 @@ metadata:
     maintainer: sekolahlinux
     managed-by: Helm
     helm-chart: sekolahlinux-0.1.0
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internal
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
 spec:
   type: LoadBalancer
   ports:
@@ -61,7 +65,7 @@ spec:
     spec:
       containers:
         - name: service-a-server
-          image: "sekolahlinux/crawler:service-a-0c7d8e24"
+          image: "sekolahlinux/crawler:service-a-c9f34ff2"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
@@ -153,8 +157,8 @@ metadata:
   namespace: default
 spec:
   cooldownPeriod: 10
-  maxReplicaCount: 10
-  minReplicaCount: 1
+  maxReplicaCount: 5
+  minReplicaCount: 2
   pollingInterval: 10
   scaleTargetRef:
     name: service-a-server
@@ -166,4 +170,3 @@ spec:
       serverAddress: http://prometheus-server.default.svc:80
       threshold: "10"
     type: prometheus
-
