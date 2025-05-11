@@ -56,22 +56,34 @@ spec:
         managed-by: Helm
         helm-chart: sekolahlinux-0.1.0
       annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/path: "/metrics"
-        prometheus.io/port: "2112"
+        prometheus.io/scrape: "false"
         sidecar.istio.io/inject: "false"
     spec:
       containers:
         - name: service-a-server
-          image: "sekolahlinux/crawler:service-a-fecc5693"
+          image: "sekolahlinux/crawler:service-a-0c7d8e24"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
               containerPort: 8080
               protocol: TCP
-            - name: prometheus
-              containerPort: 2112
-              protocol: TCP
+          livenessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            tcpSocket:
+              port: http
+          readinessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            tcpSocket:
+              port: http
+          resources:
+            limits:
+              cpu: 100m
+              memory: 100Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
           env:
             - name: NODE_NAME
               valueFrom:
@@ -93,6 +105,18 @@ spec:
       volumes:
       restartPolicy: Always
       dnsPolicy: ClusterFirst
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: name
+                  operator: In
+                  values:
+                  - service-a-server
+              topologyKey: kubernetes.io/hostname
+            weight: 100
 ---
 # Source: sekolahlinux/templates/ingress.yaml
 apiVersion: networking.k8s.io/v1
@@ -107,7 +131,6 @@ metadata:
     managed-by: Helm
     helm-chart: sekolahlinux-0.1.0
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt
 spec:
   ingressClassName: nginx
   rules:
@@ -121,4 +144,26 @@ spec:
                 port: 
                   name: http
             pathType: ImplementationSpecific
+---
+# Source: sekolahlinux/templates/keda.yaml
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: service-a
+  namespace: default
+spec:
+  cooldownPeriod: 10
+  maxReplicaCount: 10
+  minReplicaCount: 1
+  pollingInterval: 10
+  scaleTargetRef:
+    name: service-a-server
+  triggers:
+  - metadata:
+      activationThreshold: "1"
+      query: |
+        round(sum(irate(nginx_ingress_controller_requests{ingress="service-a"}[5m])))
+      serverAddress: http://prometheus-server.default.svc:80
+      threshold: "10"
+    type: prometheus
 
