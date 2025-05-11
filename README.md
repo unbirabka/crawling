@@ -121,4 +121,8 @@ in case jika menggunakan aws eks, saya juga put pada github-action workflows yam
 
 beberapa task yang saya kerjakan diatas juga pernah saya kerjakan baik di current company ataupun di sebelumnya, dan bisa dibaca di
 
-- https://sekolahlinux.com/ 
+- https://sekolahlinux.com/
+
+untuk video live demo bisa dilihat di link berikut ini
+
+- https://www.youtube.com/watch?v=A-jZa4lGaJk
