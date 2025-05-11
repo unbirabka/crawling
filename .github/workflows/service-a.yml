@@ -84,7 +84,6 @@ jobs:
           envsubst < service-a/values.yaml.bak > service-a/values.yaml
       - name: Helm Apply
         run: |
-#          aws --version
           helm version
           helm repo add sekolahlinux 'https://raw.githubusercontent.com/unbirabka/helm-sekolahlinux/main/charts/'
           helm repo update
