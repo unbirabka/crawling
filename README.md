@@ -65,10 +65,15 @@ helm upgrade -i -f values-2.17.0.yaml keda kedacore/keda --version 2.17.0 --name
 ```
 helm upgrade -i -f values-0.49.0.yaml fluent-bit fluent/fluent-bit --version 0.49.0 
 ```
+- ingress-nginx
+```
+- helm upgrade -i -f values-4.12.2.yaml ingress-nginx ingress-nginx/ingress-nginx --version 4.12.2 --namespace ingress-nginx
+```
 - metric-server
 ```
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 ```
+
 
 ## Applying the YAML
 
@@ -113,3 +118,7 @@ di dalam manifest diatas sudah terdapat beberapa module k8s diantaranya
 in case jika menggunakan aws eks, saya juga put pada github-action workflows yaml, namun saya comment karena saya disini hanya perlu untuk generate manifest k8s nya dan apply manual ke minikube, selain itu saya juga sedikit menambahkan unit test linter sedernaha, untuk detail config workflownya ada disini
 
 - https://github.com/unbirabka/crawling/blob/main/.github/workflows/service-a.yml
+
+beberapa task yang saya kerjakan diatas juga pernah saya kerjakan baik di current company ataupun di sebelumnya, dan bisa dibaca di
+
+- https://sekolahlinux.com/ 
